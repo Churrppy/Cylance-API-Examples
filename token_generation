@@ -12,8 +12,8 @@
     auth_endpoint = 'https://protectapi.cylance.com/auth/v2/token'
 
     app_id = '<APP_ID>'  # Application ID from Cylance Integration
-    app_secret = '<APP_SECRET>'  # Signature
-    tenant_id = '<TENANT_ID>'  # (tid)
+    app_secret = '<APP_SECRET>'  # Application Secret from Cylance Integration
+    tenant_id = '<TENANT_ID>'  # Tenant ID
 
     encoding = 'utf-8'  # Because JSON in Python3 can't handle byte code, we need to further encode the payload.
 
