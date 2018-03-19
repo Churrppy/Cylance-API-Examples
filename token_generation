@@ -1,0 +1,53 @@
+  """
+        Token must included:
+            exp: expiry (no more than 30 minutes) Unix Epoch time (milliseconds)
+            iat: time token issued
+            iss: principal (always: http://cylance.com)
+            jti: Unique ID to prevent replay attacks
+            sub: Application ID
+            tid: Token ID
+            scp: Scope
+    """
+
+    auth_endpoint = 'https://protectapi.cylance.com/auth/v2/token'
+
+    app_id = '<APP_ID>'  # Application ID from Cylance Integration
+    app_secret = '<APP_SECRET>'  # Signature
+    tenant_id = '<TENANT_ID>'  # (tid)
+
+    encoding = 'utf-8'  # Because JSON in Python3 can't handle byte code, we need to further encode the payload.
+
+    # 30 minutes from now
+    timeout = 1800
+    now = datetime.utcnow()
+    timeout_datetime = now + timedelta(seconds=timeout)
+    epoch_time = int((now - datetime(1970, 1, 1)).total_seconds())
+    epoch_timeout = int((timeout_datetime - datetime(1970, 1, 1)).total_seconds())
+
+    jti_val = str(uuid.uuid4())  # Random UUID, can be customized.
+
+    claims = {
+        'iss': 'http://cylance.com',
+        'iat': epoch_time,
+        'exp': epoch_timeout,
+        'sub': app_id,
+        'jti': jti_val,
+        'tid': tenant_id,
+        'scp': 'policy:read'  # Restricted to read only. OPTIONAL
+    }
+
+    encoded = jwt.encode(claims, app_secret, algorithm='HS256')  # Encoded as Byte
+    print('auth_token:\n' + str(encoded) + '\n')
+
+    enc_string = encoded.decode(encoding)  # Further encoded as a string "UTF-8"
+
+    payload = {'auth_token': enc_string}
+    headers = {'Content-Type': 'application/json', 'Charset': 'utf-8'}
+    resp = requests.post(auth_endpoint, headers=headers, data=json.dumps(payload))
+
+    print('http_status_code: ' + str(resp.status_code))
+
+    if resp.status_code == 200:
+        print('access_token:\n' + json.loads(resp.text)['access_token'] + '\n')
+    else:
+        print(json.loads(resp.text))
