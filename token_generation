@@ -1,5 +1,5 @@
   """
-        Token must included:
+        Token must include:
             exp: expiry (no more than 30 minutes) Unix Epoch time (milliseconds)
             iat: time token issued
             iss: principal (always: http://cylance.com)
