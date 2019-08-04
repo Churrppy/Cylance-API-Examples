@@ -1,3 +1,4 @@
+  #! /usr/bin/env Python
   """
         Token must include:
             exp: expiry (no more than 30 minutes) Unix Epoch time (milliseconds)
